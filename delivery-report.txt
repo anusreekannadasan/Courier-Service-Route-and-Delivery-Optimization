@@ -1,0 +1,9 @@
+COURIER DELIVERY REPORT
+=======================
+Delivery ID: 10
+Tracking Number: 123
+Customer ID: 1
+Parcel ID: 1
+Agent ID: 1
+Status: Pending
+-----------------------

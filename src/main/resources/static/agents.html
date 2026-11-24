@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delivery Agent Registration</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #263b5e;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #263b5e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Delivery Agent Registration</h2>
+
+    <form id="agentForm">
+
+        <label>Agent Name</label>
+        <input type="text" id="agentName" required>
+
+        <label>Phone Number</label>
+        <input type="tel" id="phone" required>
+
+        <label>Availability</label>
+        <select id="availability" required>
+            <option value="">Select Availability</option>
+            <option value="Available">Available</option>
+            <option value="Unavailable">Unavailable</option>
+        </select>
+
+        <button type="submit">Register Agent</button>
+
+    </form>
+
+    <p id="message"></p>
+
+</div>
+
+<script>
+
+document.getElementById("agentForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const agent = {
+        agentName: document.getElementById("agentName").value,
+        phone: document.getElementById("phone").value,
+        availability: document.getElementById("availability").value
+    };
+
+    try {
+
+        const response = await fetch("/api/agents", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(agent)
+        });
+
+        if (response.ok) {
+
+            document.getElementById("message").textContent =
+                "Delivery agent registered successfully!";
+
+            document.getElementById("agentForm").reset();
+
+        } else {
+
+            document.getElementById("message").textContent =
+                "Registration failed!";
+
+        }
+
+    } catch (error) {
+
+        document.getElementById("message").textContent =
+            "Unable to connect to server.";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

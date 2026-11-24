@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parcel Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #263b5e;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #263b5e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Parcel Registration</h2>
+
+    <form id="parcelForm">
+
+        <label>Parcel Name</label>
+        <input type="text" id="parcelName" required>
+
+        <label>Parcel Category</label>
+        <select id="parcelCategory" required>
+            <option value="">Select Category</option>
+            <option value="Document">Document</option>
+            <option value="Standard">Standard</option>
+            <option value="Express">Express</option>
+        </select>
+
+        <label>Weight (kg)</label>
+        <input type="number" id="weight" min="0.01" step="0.01" required>
+
+        <label>Delivery Charge (₹)</label>
+        <input type="number" id="deliveryCharge" min="0" step="0.01" required>
+
+        <label>Priority Level</label>
+        <select id="priorityLevel" required>
+            <option value="">Select Priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <button type="submit">Register Parcel</button>
+
+    </form>
+
+    <p id="message"></p>
+</div>
+
+<script>
+document.getElementById("parcelForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const parcel = {
+        parcelName: document.getElementById("parcelName").value,
+        parcelCategory: document.getElementById("parcelCategory").value,
+        weight: Number(document.getElementById("weight").value),
+        deliveryCharge: Number(document.getElementById("deliveryCharge").value),
+        priorityLevel: document.getElementById("priorityLevel").value
+    };
+
+    try {
+        const response = await fetch("/api/parcels", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(parcel)
+        });
+
+        if (response.ok) {
+            document.getElementById("message").textContent =
+                "Parcel registered successfully!";
+
+            document.getElementById("parcelForm").reset();
+        } else {
+            document.getElementById("message").textContent =
+                "Registration failed. Please check the details.";
+        }
+
+    } catch (error) {
+        document.getElementById("message").textContent =
+            "Unable to connect to the server.";
+    }
+});
+</script>
+
+</body>
+</html>

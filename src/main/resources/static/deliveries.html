@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delivery Registration</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f1f5f9;
+            padding: 30px;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            max-width: 450px;
+            margin: auto;
+            border-radius: 10px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Register New Delivery</h2>
+
+    <form id="deliveryForm">
+        <label>Tracking Number</label>
+        <input type="text" id="trackingNumber" required>
+
+        <label>Customer ID</label>
+        <input type="number" id="customerId" required>
+
+        <label>Parcel ID</label>
+        <input type="number" id="parcelId" required>
+
+        <label>Agent ID</label>
+        <input type="number" id="agentId" required>
+
+        <label>Route ID</label>
+        <input type="number" id="routeId">
+
+        <button type="submit">Register Delivery</button>
+    </form>
+
+    <p id="message"></p>
+    <a href="index.html">Back to Home</a>
+</div>
+
+<script>
+document.getElementById("deliveryForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const delivery = {
+        trackingNumber: document.getElementById("trackingNumber").value,
+        customerId: Number(document.getElementById("customerId").value),
+        parcelId: Number(document.getElementById("parcelId").value),
+        agentId: Number(document.getElementById("agentId").value),
+        routeId: document.getElementById("routeId").value
+            ? Number(document.getElementById("routeId").value) : null
+    };
+
+    try {
+        const response = await fetch("/api/deliveries", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(delivery)
+        });
+
+        if (!response.ok) {
+            throw new Error("Registration failed");
+        }
+
+        const result = await response.json();
+        document.getElementById("message").innerText =
+            "Delivery registered! Tracking ID: " + result.trackingNumber;
+
+        document.getElementById("deliveryForm").reset();
+
+    } catch (error) {
+        document.getElementById("message").innerText =
+            "Error registering delivery. Check the IDs and try again.";
+    }
+});
+</script>
+
+</body>
+</html>

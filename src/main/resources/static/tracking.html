@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delivery Tracking</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f1f5f9;
+            padding: 30px;
+        }
+        .container {
+            background: white;
+            max-width: 450px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Track Your Delivery</h2>
+
+    <input type="text" id="trackingNumber"
+           placeholder="Enter tracking number">
+
+    <button onclick="trackDelivery()">Track</button>
+
+    <div class="result" id="result"></div>
+
+    <a href="index.html">Back to Home</a>
+</div>
+
+<script>
+async function trackDelivery() {
+    const number = document.getElementById("trackingNumber").value.trim();
+    const result = document.getElementById("result");
+
+    if (!number) {
+        result.innerText = "Please enter a tracking number.";
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            "/api/tracking/" + encodeURIComponent(number)
+        );
+
+        if (!response.ok) {
+            throw new Error("Tracking number not found");
+        }
+
+        const history = await response.json();
+
+        if (history.length === 0) {
+            result.innerHTML =
+                "<p>No tracking updates yet.</p><p>Delivery is registered but has no location updates.</p>";
+            return;
+        }
+
+        result.innerHTML = "<h3>Tracking History</h3>";
+
+        history.forEach(item => {
+            result.innerHTML += `
+                <p><b>Status:</b> ${item.deliveryStatus}</p>
+                <p><b>Location:</b> ${item.location}</p>
+                <p><b>Updated:</b> ${item.updatedAt || "Not available"}</p>
+                <hr>
+            `;
+        });
+
+    } catch (error) {
+        result.innerText = error.message;
+    }
+}
+</script>
+
+</body>
+</html>
